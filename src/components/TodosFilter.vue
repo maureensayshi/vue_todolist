@@ -13,13 +13,8 @@ export default {
       required: true
     }
   },
-  data() {
-    return {};
-  },
   methods: {
     changeFilter(filter) {
-      console.log(filter);
-
       eventBus.$emit("changedFilter", filter);
     }
   }

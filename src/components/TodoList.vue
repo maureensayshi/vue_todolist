@@ -12,7 +12,6 @@
       v-for="(todo, index) in todosFiltered"
       :key="todo.id"
       :todo="todo"
-      :index="index"
       :checkAll="!anyRemaining"
     ></todo-item>
 
@@ -50,16 +49,35 @@ export default {
   data() {
     return {
       newTodo: "",
-      isForTodo: 2,
+      idForTodo: 4,
       beforeEditCache: "",
       filters: ["all", "active", "completed"],
       filterCurrent: "all",
-      todos: []
+      todos: [
+        {
+          id: 1,
+          title: "sample 1",
+          completed: true,
+          editing: false
+        },
+        {
+          id: 2,
+          title: "sample 2",
+          completed: false,
+          editing: false
+        },
+        {
+          id: 3,
+          title: "sample 3",
+          completed: false,
+          editing: false
+        }
+      ]
     };
   },
   created() {
     eventBus.$on("finishedEdit", data => this.finishEdit(data));
-    eventBus.$on("removedTodo", index => this.removeTodo(index));
+    eventBus.$on("removedTodo", id => this.removeTodo(id));
     eventBus.$on("checkedAll", checked => this.checkAllTodos(checked));
     eventBus.$on(
       "changedFilter",
@@ -68,14 +86,11 @@ export default {
     eventBus.$on("clearCompletedChecked", () => this.clearCompleted());
   },
   beforeDestroy() {
-    eventBus.$off("finishEdit", data => finishEdit(data));
-    eventBus.$off("removedTodo", index => removeTodo(index));
-    eventBus.$off("checkedAll", checked => this.checkAllTodos(checked));
-    eventBus.$off(
-      "changedFilter",
-      currentFilter => (this.filterCurrent = currentFilter)
-    );
-    eventBus.$off("clearCompletedChecked", () => this.clearCompleted());
+    eventBus.$off("finishedEdit");
+    eventBus.$off("removedTodo");
+    eventBus.$off("checkedAll");
+    eventBus.$off("changedFilter");
+    eventBus.$off("clearCompletedChecked");
   },
   methods: {
     addTodo() {
@@ -83,6 +98,7 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return;
       }
+
       this.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
@@ -90,11 +106,10 @@ export default {
         editing: false
       });
       this.newTodo = "";
-      this.isForTodo++;
+      this.idForTodo++;
     },
-    removeTodo(index) {
-      console.log(index);
-
+    removeTodo(id) {
+      const index = this.todos.findIndex(item => item.id == id);
       this.todos.splice(index, 1);
     },
     checkAllTodos() {
@@ -105,7 +120,8 @@ export default {
       this.todos = this.todos.filter(todo => !todo.completed);
     },
     finishEdit(data) {
-      this.todos.splice(data.index, 1, data.todo);
+      const index = this.todos.findIndex(item => item.id === data.id);
+      this.todos.splice(index, 1, data);
     }
   },
   computed: {
@@ -117,18 +133,10 @@ export default {
       return this.remaining !== 0;
     },
     todosFiltered() {
-      console.log(this.filterCurrent);
-
       if (this.filterCurrent == "all") {
         return this.todos;
       } else if (this.filterCurrent == "active") {
-        return this.todos.filter(todo => {
-          console.log("filter: ", this.filterCurrent);
-
-          console.log("todo.completed", todo.completed);
-
-          return todo.completed === false;
-        });
+        return this.todos.filter(todo => !todo.completed);
       } else if (this.filterCurrent == "completed") {
         return this.todos.filter(todo => todo.completed);
       }

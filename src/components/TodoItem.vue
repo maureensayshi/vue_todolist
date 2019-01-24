@@ -19,20 +19,16 @@
         v-focus
       >
     </div>
-    <div class="remove-item" @click="removeTodo(index)">&times</div>
+    <div class="remove-item" @click="removeTodo(todo.id)">&times</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TodoItem",
+  name: "todo-item",
   props: {
     todo: {
       type: Object,
-      required: true
-    },
-    index: {
-      type: Number,
       required: true
     },
     checkAll: {
@@ -46,8 +42,7 @@ export default {
       title: this.todo.title,
       completed: this.todo.completed,
       editing: this.todo.editing,
-      beforeEditCache: "",
-      todoing: this.todo
+      beforeEditCache: ""
     };
   },
   watch: {
@@ -63,36 +58,30 @@ export default {
     }
   },
   methods: {
-    removeTodo(index) {
-      eventBus.$emit("removedTodo", index);
+    removeTodo(id) {
+      eventBus.$emit("removedTodo", id);
     },
     editTodo() {
       this.beforeEditCache = this.title;
       this.editing = true;
     },
     doneEdit() {
-      console.log("todo", this);
-
       if (this.title.trim() === "") {
         this.title = this.beforeEditCache;
       }
       this.editing = false;
       eventBus.$emit("finishedEdit", {
-        index: this.index,
-        todo: {
-          id: this.id,
-          title: this.title,
-          completed: this.completed,
-          editing: this.editing
-        }
+        id: this.id,
+        title: this.title,
+        completed: this.completed,
+        editing: this.editing
       });
     },
     cancelEdit(todo) {
       this.title = this.beforeEditCache;
       this.editing = false;
     }
-  },
-  computed: {}
+  }
 };
 </script>
   
