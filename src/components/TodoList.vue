@@ -49,33 +49,15 @@ export default {
   data() {
     return {
       newTodo: "",
-      idForTodo: 4,
+      idForTodo: 0,
       beforeEditCache: "",
       filters: ["all", "active", "completed"],
       filterCurrent: "all",
-      todos: [
-        {
-          id: 1,
-          title: "sample 1",
-          completed: true,
-          editing: false
-        },
-        {
-          id: 2,
-          title: "sample 2",
-          completed: false,
-          editing: false
-        },
-        {
-          id: 3,
-          title: "sample 3",
-          completed: false,
-          editing: false
-        }
-      ]
+      todos: []
     };
   },
   created() {
+    this.getData();
     eventBus.$on("finishedEdit", data => this.finishEdit(data));
     eventBus.$on("removedTodo", id => this.removeTodo(id));
     eventBus.$on("checkedAll", checked => this.checkAllTodos(checked));
@@ -85,6 +67,12 @@ export default {
     );
     eventBus.$on("clearCompletedChecked", () => this.clearCompleted());
   },
+  watch: {
+    //to watch whick data property has changed
+    todos() {
+      window.localStorage.setItem("todos", JSON.stringify(this.todos));
+    }
+  },
   beforeDestroy() {
     eventBus.$off("finishedEdit");
     eventBus.$off("removedTodo");
@@ -93,12 +81,17 @@ export default {
     eventBus.$off("clearCompletedChecked");
   },
   methods: {
+    getData() {
+      if (JSON.parse(window.localStorage.getItem("todos"))) {
+        this.todos = JSON.parse(window.localStorage.getItem("todos"));
+        this.idForTodo = this.todos[this.todos.length - 1].id + 1;
+      }
+    },
     addTodo() {
       //prevent blank newTodo
       if (this.newTodo.trim().length === 0) {
         return;
       }
-
       this.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
