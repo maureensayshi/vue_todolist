@@ -54,6 +54,17 @@ export const store = new Vuex.Store({
     },
     removingTodo(state, index) {
       state.todos.splice(index, 1)
+    },
+    doneEdit(state, { index, data }) {
+      state.todos.splice(index, 1, {
+        id: data.id,
+        title: data.title,
+        completed: data.completed,
+        editing: data.editing
+      })
+    },
+    checkAll(state, clickCheckAll) {
+      state.todos.forEach(todo => (todo.completed = clickCheckAll))
     }
   }
 })

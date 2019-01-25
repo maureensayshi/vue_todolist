@@ -61,7 +61,6 @@ export default {
     removeTodo(id) {
       const index = this.$store.state.todos.findIndex(item => item.id == id);
       this.$store.commit("removingTodo", index);
-      //   this.$store.state.todos.splice(index, 1);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -76,12 +75,15 @@ export default {
       const index = this.$store.state.todos.findIndex(
         item => item.id === this.id
       );
-      this.$store.state.todos.splice(index, 1, {
+
+      let data = {
         id: this.id,
         title: this.title,
         completed: this.completed,
         editing: this.editing
-      });
+      };
+
+      this.$store.commit("doneEdit", { index, data });
     },
     cancelEdit(todo) {
       this.title = this.beforeEditCache;

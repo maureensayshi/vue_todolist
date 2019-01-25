@@ -9,7 +9,6 @@ export default {
   name: "to-clear-completed",
   methods: {
     clearCompletedCheck() {
-      // eventBus.$emit("clearCompletedChecked");
       this.$store.state.todos = this.$store.state.todos.filter(
         todo => !todo.completed
       );

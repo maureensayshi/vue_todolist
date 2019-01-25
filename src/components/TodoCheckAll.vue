@@ -12,9 +12,7 @@ export default {
   methods: {
     checkAll() {
       //event.target.checked 是指 check all 的 checkbox 的 checked 狀態
-      this.$store.state.todos.forEach(
-        todo => (todo.completed = event.target.checked)
-      );
+      this.$store.commit("checkAll", event.target.checked);
     }
   },
   computed: {
