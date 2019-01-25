@@ -6,7 +6,20 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     filterCurrent: "all",
-    todos: []
+    todos: [
+      {
+        id: 1,
+        title: "sample 1",
+        completed: false,
+        editing: false
+      },
+      {
+        id: 2,
+        title: "sample 2",
+        completed: false,
+        editing: false
+      }
+    ]
   },
   getters: {
     remaining(state) {
@@ -28,6 +41,19 @@ export const store = new Vuex.Store({
     },
     showClearCompletedButton(state) {
       return state.todos.filter(todo => todo.completed).length > 0
+    }
+  },
+  mutations: {
+    addingTodo(state, data) {
+      state.todos.push({
+        id: data.id,
+        title: data.title,
+        completed: false,
+        editing: false
+      })
+    },
+    removingTodo(state, index) {
+      state.todos.splice(index, 1)
     }
   }
 })

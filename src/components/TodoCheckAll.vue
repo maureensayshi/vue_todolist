@@ -9,15 +9,17 @@
 <script>
 export default {
   name: "todo-remianing",
-  props: {
-    anyRemaining: {
-      type: Boolean,
-      required: true
-    }
-  },
   methods: {
     checkAll() {
-      eventBus.$emit("checkedAll", this.anyRemaining);
+      //event.target.checked 是指 check all 的 checkbox 的 checked 狀態
+      this.$store.state.todos.forEach(
+        todo => (todo.completed = event.target.checked)
+      );
+    }
+  },
+  computed: {
+    anyRemaining() {
+      return this.$store.getters.anyRemaining;
     }
   }
 };

@@ -16,7 +16,7 @@
     ></todo-item>
 
     <div class="extra-container">
-      <todo-check-all :anyRemaining="anyRemaining"></todo-check-all>
+      <todo-check-all></todo-check-all>
       <todo-remaining></todo-remaining>
     </div>
 
@@ -25,7 +25,7 @@
     </div>
 
     <div>
-      <to-clear-complete :showClearCompletedButton="showClearCompletedButton"></to-clear-complete>
+      <to-clear-complete></to-clear-complete>
     </div>
   </div>
 </template>
@@ -49,21 +49,13 @@ export default {
   data() {
     return {
       newTodo: "",
-      idForTodo: 0,
+      idForTodo: 3,
       beforeEditCache: "",
       filters: ["all", "active", "completed"]
     };
   },
   created() {
     this.getData();
-    // eventBus.$on("finishedEdit", data => this.finishEdit(data));
-    // eventBus.$on("removedTodo", id => this.removeTodo(id));
-    eventBus.$on("checkedAll", checked => this.checkAllTodos(checked));
-    eventBus.$on(
-      "changedFilter",
-      currentFilter => (this.$store.state.filterCurrent = currentFilter)
-    );
-    eventBus.$on("clearCompletedChecked", () => this.clearCompleted());
   },
   watch: {
     //to watch whick data property has changed
@@ -73,13 +65,6 @@ export default {
         JSON.stringify(this.$store.state.todos)
       );
     }
-  },
-  beforeDestroy() {
-    // eventBus.$off("finishedEdit");
-    // eventBus.$off("removedTodo");
-    eventBus.$off("checkedAll");
-    eventBus.$off("changedFilter");
-    eventBus.$off("clearCompletedChecked");
   },
   methods: {
     getData() {
@@ -96,49 +81,21 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return;
       }
-      this.$store.state.todos.push({
+      //want to change data(state) => set mutation event => use commit method
+      this.$store.commit("addingTodo", {
         id: this.idForTodo,
-        title: this.newTodo,
-        completed: false,
-        editing: false
+        title: this.newTodo
       });
       this.newTodo = "";
       this.idForTodo++;
-    },
-    // removeTodo(id) {
-    //   const index = this.$store.state.todos.findIndex(item => item.id == id);
-    //   this.$store.state.todos.splice(index, 1);
-    // },
-    checkAllTodos() {
-      //event.target.checked 是指 check all 的 checkbox 的 checked 狀態
-      this.$store.state.todos.forEach(
-        todo => (todo.completed = event.target.checked)
-      );
-    },
-    clearCompleted() {
-      this.$store.state.todos = this.$store.state.todos.filter(
-        todo => !todo.completed
-      );
     }
-    // finishEdit(data) {
-    //   const index = this.$store.state.todos.findIndex(
-    //     item => item.id === data.id
-    //   );
-    //   this.$store.state.todos.splice(index, 1, data);
-    // }
   },
   computed: {
-    // remaining() {
-    //   return this.$store.getters.remaining;
-    // },
     anyRemaining() {
       return this.$store.getters.anyRemaining;
     },
     todosFiltered() {
       return this.$store.getters.todosFiltered;
-    },
-    showClearCompletedButton() {
-      return this.$store.getters.showClearCompletedButton;
     }
   }
 };
