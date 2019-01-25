@@ -51,9 +51,7 @@ export default {
       newTodo: "",
       idForTodo: 0,
       beforeEditCache: "",
-      filters: ["all", "active", "completed"],
-      filterCurrent: "all",
-      todos: []
+      filters: ["all", "active", "completed"]
     };
   },
   created() {
@@ -63,14 +61,17 @@ export default {
     eventBus.$on("checkedAll", checked => this.checkAllTodos(checked));
     eventBus.$on(
       "changedFilter",
-      currentFilter => (this.filterCurrent = currentFilter)
+      currentFilter => (this.$store.state.filterCurrent = currentFilter)
     );
     eventBus.$on("clearCompletedChecked", () => this.clearCompleted());
   },
   watch: {
     //to watch whick data property has changed
     todos() {
-      window.localStorage.setItem("todos", JSON.stringify(this.todos));
+      window.localStorage.setItem(
+        "todos",
+        JSON.stringify(this.$store.state.todos)
+      );
     }
   },
   beforeDestroy() {
@@ -83,8 +84,11 @@ export default {
   methods: {
     getData() {
       if (JSON.parse(window.localStorage.getItem("todos"))) {
-        this.todos = JSON.parse(window.localStorage.getItem("todos"));
-        this.idForTodo = this.todos[this.todos.length - 1].id + 1;
+        this.$store.state.todos = JSON.parse(
+          window.localStorage.getItem("todos")
+        );
+        this.idForTodo =
+          this.$store.state.todos[this.$store.state.todos.length - 1].id + 1;
       }
     },
     addTodo() {
@@ -92,7 +96,7 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return;
       }
-      this.todos.push({
+      this.$store.state.todos.push({
         id: this.idForTodo,
         title: this.newTodo,
         completed: false,
@@ -102,41 +106,40 @@ export default {
       this.idForTodo++;
     },
     removeTodo(id) {
-      const index = this.todos.findIndex(item => item.id == id);
-      this.todos.splice(index, 1);
+      const index = this.$store.state.todos.findIndex(item => item.id == id);
+      this.$store.state.todos.splice(index, 1);
     },
     checkAllTodos() {
       //event.target.checked 是指 check all 的 checkbox 的 checked 狀態
-      this.todos.forEach(todo => (todo.completed = event.target.checked));
+      this.$store.state.todos.forEach(
+        todo => (todo.completed = event.target.checked)
+      );
     },
     clearCompleted() {
-      this.todos = this.todos.filter(todo => !todo.completed);
+      this.$store.state.todos = this.$store.state.todos.filter(
+        todo => !todo.completed
+      );
     },
     finishEdit(data) {
-      const index = this.todos.findIndex(item => item.id === data.id);
-      this.todos.splice(index, 1, data);
+      const index = this.$store.state.todos.findIndex(
+        item => item.id === data.id
+      );
+      this.$store.state.todos.splice(index, 1, data);
     }
   },
   computed: {
     remaining() {
-      return this.todos.filter(todo => !todo.completed).length;
+      return this.$store.getters.remaining;
     },
     anyRemaining() {
       //if remaining is 0, it will return false.
-      return this.remaining !== 0;
+      return this.$store.getters.anyRemaining;
     },
     todosFiltered() {
-      if (this.filterCurrent == "all") {
-        return this.todos;
-      } else if (this.filterCurrent == "active") {
-        return this.todos.filter(todo => !todo.completed);
-      } else if (this.filterCurrent == "completed") {
-        return this.todos.filter(todo => todo.completed);
-      }
-      return this.todos;
+      return this.$store.getters.todosFiltered;
     },
     showClearCompletedButton() {
-      return this.todos.filter(todo => todo.completed).length > 0;
+      return this.$store.getters.showClearCompletedButton;
     }
   }
 };
