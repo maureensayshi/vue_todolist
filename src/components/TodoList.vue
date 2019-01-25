@@ -17,7 +17,7 @@
 
     <div class="extra-container">
       <todo-check-all :anyRemaining="anyRemaining"></todo-check-all>
-      <todo-remaining :remaining="remaining"></todo-remaining>
+      <todo-remaining></todo-remaining>
     </div>
 
     <div class="extra-container">
@@ -56,8 +56,8 @@ export default {
   },
   created() {
     this.getData();
-    eventBus.$on("finishedEdit", data => this.finishEdit(data));
-    eventBus.$on("removedTodo", id => this.removeTodo(id));
+    // eventBus.$on("finishedEdit", data => this.finishEdit(data));
+    // eventBus.$on("removedTodo", id => this.removeTodo(id));
     eventBus.$on("checkedAll", checked => this.checkAllTodos(checked));
     eventBus.$on(
       "changedFilter",
@@ -75,8 +75,8 @@ export default {
     }
   },
   beforeDestroy() {
-    eventBus.$off("finishedEdit");
-    eventBus.$off("removedTodo");
+    // eventBus.$off("finishedEdit");
+    // eventBus.$off("removedTodo");
     eventBus.$off("checkedAll");
     eventBus.$off("changedFilter");
     eventBus.$off("clearCompletedChecked");
@@ -105,10 +105,10 @@ export default {
       this.newTodo = "";
       this.idForTodo++;
     },
-    removeTodo(id) {
-      const index = this.$store.state.todos.findIndex(item => item.id == id);
-      this.$store.state.todos.splice(index, 1);
-    },
+    // removeTodo(id) {
+    //   const index = this.$store.state.todos.findIndex(item => item.id == id);
+    //   this.$store.state.todos.splice(index, 1);
+    // },
     checkAllTodos() {
       //event.target.checked 是指 check all 的 checkbox 的 checked 狀態
       this.$store.state.todos.forEach(
@@ -119,20 +119,19 @@ export default {
       this.$store.state.todos = this.$store.state.todos.filter(
         todo => !todo.completed
       );
-    },
-    finishEdit(data) {
-      const index = this.$store.state.todos.findIndex(
-        item => item.id === data.id
-      );
-      this.$store.state.todos.splice(index, 1, data);
     }
+    // finishEdit(data) {
+    //   const index = this.$store.state.todos.findIndex(
+    //     item => item.id === data.id
+    //   );
+    //   this.$store.state.todos.splice(index, 1, data);
+    // }
   },
   computed: {
-    remaining() {
-      return this.$store.getters.remaining;
-    },
+    // remaining() {
+    //   return this.$store.getters.remaining;
+    // },
     anyRemaining() {
-      //if remaining is 0, it will return false.
       return this.$store.getters.anyRemaining;
     },
     todosFiltered() {
