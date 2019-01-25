@@ -15,8 +15,7 @@ export default {
   },
   methods: {
     changeFilter(filter) {
-      this.$store.state.filterCurrent = filter;
-      this.$store.commit("changeFilter", filter);
+      this.$store.commit("updateFilter", filter);
     }
   }
 };

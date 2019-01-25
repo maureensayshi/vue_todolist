@@ -59,8 +59,7 @@ export default {
   },
   methods: {
     removeTodo(id) {
-      const index = this.$store.state.todos.findIndex(item => item.id == id);
-      this.$store.commit("removingTodo", index);
+      this.$store.commit("removingTodo", id);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -72,18 +71,12 @@ export default {
       }
       this.editing = false;
 
-      const index = this.$store.state.todos.findIndex(
-        item => item.id === this.id
-      );
-
-      let data = {
+      this.$store.commit("updateTodo", {
         id: this.id,
         title: this.title,
         completed: this.completed,
         editing: this.editing
-      };
-
-      this.$store.commit("doneEdit", { index, data });
+      });
     },
     cancelEdit(todo) {
       this.title = this.beforeEditCache;

@@ -49,13 +49,13 @@ export default {
   data() {
     return {
       newTodo: "",
-      idForTodo: 3,
+      //   $store.state.idForTodo: 3,
       beforeEditCache: "",
       filters: ["all", "active", "completed"]
     };
   },
   created() {
-    this.getData();
+    this.$store.commit("getData");
   },
   watch: {
     //to watch whick data property has changed
@@ -67,27 +67,24 @@ export default {
     }
   },
   methods: {
-    getData() {
-      if (JSON.parse(window.localStorage.getItem("todos"))) {
-        this.$store.state.todos = JSON.parse(
-          window.localStorage.getItem("todos")
-        );
-        this.idForTodo =
-          this.$store.state.todos[this.$store.state.todos.length - 1].id + 1;
-      }
-    },
     addTodo() {
       //prevent blank newTodo
       if (this.newTodo.trim().length === 0) {
         return;
       }
       //want to change data(state) => set mutation event => use commit method
-      this.$store.commit("addingTodo", {
-        id: this.idForTodo,
+      //   this.$store.commit("addTodo", {
+      //     id: this.$store.state.idForTodo,
+      //     title: this.newTodo
+      //   });
+      //want to deal with asynchronous method => set actions => use dispatch method
+      this.$store.dispatch("addTodo", {
+        id: this.$store.state.idForTodo,
         title: this.newTodo
       });
+
       this.newTodo = "";
-      this.idForTodo++;
+      this.$store.state.idForTodo++;
     }
   },
   computed: {
