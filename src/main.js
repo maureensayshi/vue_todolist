@@ -4,6 +4,7 @@ import Vue from "vue"
 import App from "./App"
 import router from "./router"
 import { store } from "./store/store"
+import { mapGetters } from "vuex"
 
 Vue.config.productionTip = false
 

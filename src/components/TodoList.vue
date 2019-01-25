@@ -36,6 +36,7 @@ import TodoRemaining from "./TodoRemaining";
 import TodoCheckAll from "./TodoCheckAll";
 import TodosFilter from "./TodosFilter";
 import ToClearComplete from "./ToClearComplete";
+import { mapGetters } from "vuex";
 
 export default {
   name: "todos",
@@ -72,12 +73,8 @@ export default {
       if (this.newTodo.trim().length === 0) {
         return;
       }
-      //want to change data(state) => set mutation event => use commit method
-      //   this.$store.commit("addTodo", {
-      //     id: this.$store.state.idForTodo,
-      //     title: this.newTodo
-      //   });
-      //want to deal with asynchronous method => set actions => use dispatch method
+
+      //觸發 action 中的 "addTodo", 提交(commit) mutations 裡的 "addTodo"
       this.$store.dispatch("addTodo", {
         id: this.$store.state.idForTodo,
         title: this.newTodo
@@ -88,12 +85,13 @@ export default {
     }
   },
   computed: {
-    anyRemaining() {
-      return this.$store.getters.anyRemaining;
-    },
-    todosFiltered() {
-      return this.$store.getters.todosFiltered;
-    }
+    ...mapGetters(["anyRemaining", "todosFiltered"])
+    // anyRemaining() {
+    //   return this.$store.getters.anyRemaining;
+    // },
+    // todosFiltered() {
+    //   return this.$store.getters.todosFiltered;
+    // }
   }
 };
 </script>

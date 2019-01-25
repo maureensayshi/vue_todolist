@@ -10,14 +10,14 @@ export const store = new Vuex.Store({
     idForTodo: 4
   },
   getters: {
-    remaining(state) {
+    remaining: state => {
       return state.todos.filter(todo => !todo.completed).length
     },
     anyRemaining(state, getters) {
       //if remaining is 0, it will return false.
       return getters.remaining !== 0
     },
-    todosFiltered(state) {
+    todosFiltered: state => {
       if (state.filterCurrent == "all") {
         return state.todos
       } else if (state.filterCurrent == "active") {
@@ -27,12 +27,12 @@ export const store = new Vuex.Store({
       }
       return state.todos
     },
-    showClearCompletedButton(state) {
+    showClearCompletedButton: state => {
       return state.todos.filter(todo => todo.completed).length > 0
     }
   },
   mutations: {
-    getData(state) {
+    getData: state => {
       if (JSON.parse(window.localStorage.getItem("todos"))) {
         state.todos = JSON.parse(window.localStorage.getItem("todos"))
         state.idForTodo = state.todos[state.todos.length - 1].id + 1
@@ -80,10 +80,10 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    addTodo(context, todo) {
+    addTodo({ commit }, todo) {
       //execute after setTimeout and re-render view
       setTimeout(() => {
-        context.commit("addTodo", todo)
+        commit("addTodo", todo)
       }, 1000)
     }
   }

@@ -47,6 +47,9 @@ export default {
   },
   watch: {
     checkAll() {
+      console.log("test", this.completed);
+      console.log("checkAll", this.checkAll);
+
       this.completed = this.checkAll ? true : this.todo.completed;
     }
   },
