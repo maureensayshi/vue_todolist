@@ -9,9 +9,7 @@ export default {
   name: "to-clear-completed",
   methods: {
     clearCompletedCheck() {
-      this.$store.state.todos = this.$store.state.todos.filter(
-        todo => !todo.completed
-      );
+      this.$store.commit("clearCompletedTodo");
     }
   },
   computed: {
